@@ -6,7 +6,7 @@
      }
      console.log('Connected to mongodb server');
 
-    //  const db = client.db('TodoApp');
+     const db = client.db('TodoApp');
 
     //  db.collection('Todos').insertOne({
     //      text: 'resume work',
