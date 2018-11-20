@@ -21,10 +21,17 @@ app.post('/todos', (req, res) => {
     });
 });
 
-app.get('/todos', (res, req) => {
-    console.log('get todo');
+app.get('/todos', (req, res) => {
+    Todo.find().then((todos) => {
+        if(todos.length > 0) {
+            res.send({todos});
+        } else {
+            res.send('There are no todos');
+        }
+    }, (e) => {
+        res.status(400).send('Could not fetch all the todos');
+    });
 });
-
 
 app.listen('3000', () => {
     console.log('Started on port 3000');
