@@ -53,9 +53,9 @@ app.get('/todo/:id', (req, res) => {
 app.delete('/todo/:id', (req, res) => {
     let id = req.params.id;
     if(ObjectID.isValid(id)) {
-        Todo.findByIdAndDelete(id).then( doc => {
+        Todo.findByIdAndDelete(id).then( todo => {
             if(doc) {
-                res.send(doc);
+                res.send({todo});
             } else {
                 res.status(404).send('There are no todos with this id');
             }
