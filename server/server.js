@@ -1,6 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-let {ObjectId} = require('mongodb');
+let {ObjectID} = require('mongodb');
 
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
@@ -34,16 +34,16 @@ app.get('/todos', (req, res) => {
     });
 });
 
-app.get('/todos/:id', (req, res) => {
+app.get('/todo/:id', (req, res) => {
     let id = req.params.id;
-    if(ObjectId.isValid(id)) {
+    if(ObjectID.isValid(id)) {
         Todo.findById(id).then( todo => {
-            todo ? res.send({todo}) : res.send('No todo with this id');
+            todo ? res.send({todo}) : res.status(404).send('No todo with this id');
         }).catch(e => {
             res.status(400).send('Could not retreive todo');
         })
     } else {
-        res.status(404).send('The provided id is not valid')
+        res.status(400).send('The provided id is not valid')
     }
 });
 
