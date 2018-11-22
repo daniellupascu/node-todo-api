@@ -161,6 +161,7 @@ describe('PATCH /todos/:id', () => {
             .expect(200)
             .expect(res => {
                 expect(res.body.todo.completed).toBe(completed);
+                expect(typeof(res.body.todo.completedAt)).toBe('number');
                 expect(res.body.todo.text).toBe(text);
             })
             .end((err, res) => {
