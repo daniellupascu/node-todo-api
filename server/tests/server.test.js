@@ -12,7 +12,9 @@ const seededTodos = [
     },
     {
         _id: new ObjectID(),
-        text: 'Second test todo'
+        text: 'Second test todo',
+        completed: true,
+        completedAt: 42342345,
     }
 ];
 
@@ -107,7 +109,7 @@ describe('GET /todos/:id', () => {
 
 });
 
-describe('DELETE /todos', done => {
+describe('DELETE /todos', () => {
     it('should delete the todo with the provided id', done => {
         request(app)
             .delete(`/todos/${seededTodos[0]._id}`)
@@ -145,6 +147,56 @@ describe('DELETE /todos', done => {
                 expect(res.text).toBe('The provided id is not valid')
             })
             .end(done);
+    });
+
+});
+
+describe('PATCH /todos/:id', () => {
+    it('should update the todo', done => {
+        let text = 'updated text from tests';
+        let completed = true;
+        request(app)
+            .patch(`/todos/${seededTodos[0]._id}`)
+            .send({text, completed})
+            .expect(200)
+            .expect(res => {
+                expect(res.body.todo.completed).toBe(completed);
+                expect(res.body.todo.text).toBe(text);
+            })
+            .end((err, res) => {
+                if(err) {
+                    return done(err);
+                }
+
+                Todo.findById(seededTodos[0]._id).then(todo => {
+                    expect(todo.completed).toBe(completed);
+                    expect(todo.text).toBe(text);
+                    done();
+                }).catch(e => done(e));
+
+            });
+    });
+
+    it('should clear completedAt when todo is not completed', done => {
+        request(app)
+            .patch(`/todos/${seededTodos[1]._id}`)
+            .send({completed: false})
+            .expect(200)
+            .expect(res => {
+                expect(res.body.todo.completed).toBeFalsy();
+                expect(res.body.todo.completedAt).toBeNull();
+            })
+            .end((err, res) => {
+                if(err){
+                    return done(err);
+                }
+
+                Todo.findById(seededTodos[1]._id).then(todo => {
+                    expect(todo.completedAt).toBeNull();
+                    expect(todo.completed).toBeFalsy();
+                    done();
+                }).catch(e => done(e));
+            });
     });
 
 });
