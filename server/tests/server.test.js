@@ -106,3 +106,45 @@ describe('GET /todo/:id', () => {
     });
 
 });
+
+describe('DELETE /todos', done => {
+    it('should delete the todo with the provided id', done => {
+        request(app)
+            .delete(`/todos/${seededTodos[0]._id}`)
+            .expect(200)
+            .expect(res => {
+                expect(res.body.todo.id).toBe(seededTodos[0].id)
+            })
+            .end((err, res) => {
+                if(err) {
+                    return done(err);
+                }
+
+                Todo.findById(seededTodos[0]._id).then( todo => {
+                    expect(todo).toBeNull()
+                    done();
+                }).catch(e => done(e));
+            });
+    });
+
+    it('should return 404 if todo not found', done => {
+        request(app)
+            .delete(`/todos/${new ObjectID()}`)
+            .expect(404)
+            .expect(res => {
+                expect(res.text).toBe('There are no todos with this id')
+            })
+            .end(done);
+    });
+
+    it('should return 400 and error message if the id is not valid', done => {
+        request(app)
+            .delete('/todos/12333')
+            .expect(400)
+            .expect(res => {
+                expect(res.text).toBe('The provided id is not valid')
+            })
+            .end(done);
+    });
+
+});
