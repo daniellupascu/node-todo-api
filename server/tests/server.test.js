@@ -74,10 +74,10 @@ describe('GET /todos', () => {
     });
 });
 
-describe('GET /todo/:id', () => {
+describe('GET /todos/:id', () => {
     it('should get todo with the provided id', done => {
         request(app)
-            .get(`/todo/${seededTodos[0]._id}`)
+            .get(`/todos/${seededTodos[0]._id}`)
             .expect(200)
             .expect(res => {
                 expect(res.body.todo.text).toBe(seededTodos[0].text);
@@ -87,7 +87,7 @@ describe('GET /todo/:id', () => {
 
     it('should return 404 if todo not found', done => {
         request(app)
-            .get(`/todo/${new ObjectID()}`)
+            .get(`/todos/${new ObjectID()}`)
             .expect(404)
             .expect(res => {
                 expect(res.text).toBe('No todo with this id')
@@ -97,7 +97,7 @@ describe('GET /todo/:id', () => {
 
     it('should return 400 and error message if the id is not valid', done => {
         request(app)
-            .get(`/todo/1235`)
+            .get(`/todos/1235`)
             .expect(400)
             .expect(res => {
                 expect(res.text).toBe('The provided id is not valid');
