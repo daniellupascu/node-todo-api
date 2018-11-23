@@ -21,14 +21,31 @@
 
 // return console.log(resultHash === token.hash);
  
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
-let data = {
-    id: 10
-};
+// let data = {
+//     id: 10
+// };
 
-let token = jwt.sign(data, '123abc');
-console.log(token);
+// let token = jwt.sign(data, '123abc');
+// console.log(token);
 
-let decoded = jwt.verify(token, '123abc')
-console.log(decoded);
+// let decoded = jwt.verify(token, '123abc')
+// console.log(decoded);
+
+
+let bcrypt = require('bcryptjs');
+
+let password = '123abc!';
+
+bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(password, salt, (err, hash) => {
+        console.log(hash);
+    }); 
+});
+
+var hashedPass = '$2a$10$MkA9YeoSo4Ug8rcvTkc4IeASsbBmQY2tNJk7sftkDO9YdKfbIm25m';
+
+bcrypt.compare(password, hashedPass, (err, res) => {
+    console.log(res);
+});
