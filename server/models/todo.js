@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true);
 
 var Todo = mongoose.model('Todo', {
     text: {
