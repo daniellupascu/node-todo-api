@@ -8,6 +8,7 @@ const _ = require('lodash');
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+const {authenticate} = require('./middleware/authenticate');
 
 var app = express();
 
@@ -52,6 +53,7 @@ app.get('/todos/:id', (req, res) => {
         res.status(400).send('The provided id is not valid')
     }
 });
+
 
 app.delete('/todos/:id', (req, res) => {
     let id = req.params.id;
@@ -109,7 +111,11 @@ app.post('/users', (req, res) => {
         res.status(400).send(`Could not create user ${e}`);
     });
 
-})
+});
+
+app.get('/users/me', authenticate, (req, res) => {
+    res.send(req.user)
+});
 
 app.listen(port, () => {
     console.log(`Started on port ${port}`);
