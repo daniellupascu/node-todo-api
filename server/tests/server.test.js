@@ -302,3 +302,85 @@ describe('POST /users', () => {
             });
     });
 });
+
+describe('POST /users/login', () => {
+    it('should return user and auth token if the credentials are valid', done => {
+        request(app)
+            .post('/users/login')
+            .send(seededUsers[0])
+            .expect(200)
+            .expect(res => {
+                expect(res.body.email).toBe(seededUsers[0].email);
+                expect(res.body._id).toBe(seededUsers[0]._id.toString());
+                expect(res.headers).toHaveProperty('x-auth');
+                // DUPLICATE
+                // expect(res.header['x-auth']).toBeTruthy();
+            })
+            .end((err, res) => {
+                if(err) {
+                    return done(err);
+                }
+
+                User.findById(res.body._id).then(user => {
+                    expect(user.email).toBe(seededUsers[0].email);
+                    expect(user.tokens[1].access).toBe('auth');
+                    expect(user.tokens[1].token).toBe(res.headers['x-auth']);
+                    done();
+                }).catch(e => done(e));
+
+            });
+    });
+
+    it('should reject invalid email', done => {
+        let invalidUser = {
+            ...seededUsers[1],
+            email: 'random@email.com'
+        }
+        
+        request(app)
+            .post('/users/login')
+            .send(invalidUser)
+            .expect(400)
+            .expect(res => {
+                expect(res.headers).not.toHaveProperty('x-auth');
+            })
+            .end((err, res) => {
+                if(err) {
+                    return done(err);
+                }
+
+                User.findById(invalidUser._id).then(user => {
+                    expect(user.tokens.length).toBe(0);
+                    done();
+                }).catch(e => done(e));
+
+            });
+    });
+
+    it('should reject invalid password', done => {
+        let invalidUser = {
+            ...seededUsers[1],
+            password: 'InvalidPass'
+        }
+        
+        request(app)
+            .post('/users/login')
+            .send(invalidUser)
+            .expect(400)
+            .expect(res => {
+                expect(res.headers).not.toHaveProperty('x-auth');
+            })
+            .end((err, res) => {
+                if(err) {
+                    return done(err);
+                }
+
+                User.findById(invalidUser._id).then(user => {
+                    expect(user.tokens.length).toBe(0);
+                    done();
+                }).catch(e => done(e));
+
+            });
+    });
+
+});
