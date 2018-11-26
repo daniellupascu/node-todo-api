@@ -1,7 +1,7 @@
 var env = process.env.NODE_ENV || 'development';
 var config = require('./config.json');
 
-// if(env === 'development' || env === 'test' || env === 'production') {
+// if(env === 'development' || env === 'test') {
 //     var envConfig = config[env];
 //     Object.keys(envConfig).forEach(key => {
 //         process.env[key] = envConfig[key]
@@ -17,4 +17,3 @@ if (env === 'development') {
 } else if (env === 'production') {
     process.env.MONGODB_URI = 'mongodb://daniel:123123qwe@ds113454.mlab.com:13454/node-api';
 }
-console.log(process.env);
