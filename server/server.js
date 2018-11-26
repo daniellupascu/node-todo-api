@@ -151,6 +151,10 @@ app.delete('/users/me/token', authenticate, (req, res) => {
     }));
 });
 
+app.get('/test', (req, res) => {
+    res.status(200).send('this is a test');
+});
+
 app.listen(port, () => {
     console.log(`Started on port ${port}`);
 });
