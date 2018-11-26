@@ -4,16 +4,22 @@ const {User} = require('../../models/user');
 const {ObjectID} = require('mongodb');
 const jwt = require('jsonwebtoken');
 
+
+const userOneId = new ObjectID();
+const userTwoId = new ObjectID();
+
 const seededTodos = [
     {
         _id: new ObjectID(),
-        text: 'First test todo'
+        text: 'First test todo',
+        _creator: userOneId
     },
     {
         _id: new ObjectID(),
         text: 'Second test todo',
         completed: true,
         completedAt: 42342345,
+        _creator: userTwoId 
     }
 ];
 
@@ -24,8 +30,6 @@ const populateTodos = done => {
     .catch(e => console.log(e));
 };
 
-const userOneId = new ObjectID();
-const userTwoId = new ObjectID();
 const seededUsers = [{
     _id: userOneId,
     email: 'valid@user.com',
@@ -38,7 +42,11 @@ const seededUsers = [{
 {
     _id: userTwoId,
     email: 'invalid@user.com',
-    password: 'user2pass'
+    password: 'user2pass',
+    tokens: [{
+        access: 'auth',
+        token: jwt.sign({_id:userTwoId, access: 'auth'}, 'abc123'),
+    }]
 }];
 
 const populateUsers = done => {
